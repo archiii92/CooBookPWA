@@ -1,7 +1,19 @@
 {
-  "lint": {
-    "rules": [
-      "polymer-2"
-    ]
-  }
+  "entrypoint": "index.html",
+  "shell": "src/coobook-app.html",
+  "fragments": [
+    "src/recipe-list-view.html",
+    "src/view2.html",
+    "src/view3.html",
+    "src/view404.html"
+  ],
+  "sourceGlobs": [
+    "src/**/*",
+    "images/**/*",
+    "bower.json"
+  ],
+  "includeDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+  ]
 }

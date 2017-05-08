@@ -1,0 +1,7 @@
+{
+  "name": "CooBook",
+  "short_name": "CooBook",
+  "description": "Cook Book",
+  "start_url": "/",
+  "display": "standalone"
+}

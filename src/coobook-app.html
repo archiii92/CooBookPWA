@@ -1,13 +1,3 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -68,11 +58,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
       <app-drawer id="drawer">
-        <app-toolbar>Menu</app-toolbar>
+        <app-toolbar>Меню</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="recipe-list-view" href="/recipe-list-view">Список рецептов</a>
-          <a name="view2" href="/view2">View Two</a>
-          <a name="view3" href="/view3">View Three</a>
+          <a name="recipe-create-view" href="/recipe-create-view">Создать рецепт</a>
+          <a name="recipes-list-view" href="/recipes-list-view">Список рецептов</a>
+          <a name="ingredients-list-view" href="/ingredients-list-view">Список ингредиентов</a>
         </iron-selector>
       </app-drawer>
 
@@ -91,9 +81,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <recipe-list-view name="recipe-list-view"></recipe-list-view>
-          <my-view2 name="view2"></my-view2>
-          <my-view3 name="view3"></my-view3>
+          <recipe-create-view name="recipe-create-view"></recipe-create-view>
+          <recipes-list-view name="recipes-list-view" route="{{route}}"></recipes-list-view>
+          <ingredients-list-view name="ingredients-list-view"></ingredients-list-view>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
       </app-header-layout>
@@ -113,7 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       observers: [
-        '_routePageChanged(routeData.page)',
+       '_routePageChanged(routeData.page)',
       ],
 
       _routePageChanged: function(page) {

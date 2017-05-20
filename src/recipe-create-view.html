@@ -1,0 +1,121 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../bower_components/web-animations-js/web-animations-next-lite.min.js">
+
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="recipe-create-view">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+
+      paper-input{
+        width: 100%;
+      }
+
+      paper-dropdown-menu{
+        width: 100%;
+      }
+    </style>
+
+    <div class="card">
+      <paper-input label="Название" type="text"></paper-input>
+
+      <paper-dropdown-menu label="Категория">
+        <paper-listbox slot="dropdown-content" selected="1">
+          <template is="dom-repeat" items="{{categories}}">
+            <paper-item>{{item}}</paper-item>
+          </template>
+        </paper-listbox>
+      </paper-dropdown-menu>
+
+      <paper-input label="Описание" type="text" id="description"></paper-input>
+
+      <paper-input label="Время приготовления (мин)" type="number" min="0" max="300" step="5"></paper-input>
+
+      <paper-button on-tap="_addIngredients">Добавить ингридиент</paper-button>
+
+      <paper-dialog entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop="true" id="ingredientsDialog">
+        <h2>Добавление ингредиента</h2>
+        <div>
+          <paper-dropdown-menu label="Ингредиент">
+            <paper-listbox slot="dropdown-content" selected="1">
+              <template is="dom-repeat" items="{{ingridients}}">
+                <paper-item>{{item}}</paper-item>
+              </template>
+            </paper-listbox>
+          </paper-dropdown-menu>
+
+          <paper-input label="Кол-во/Объем/Масса" type="number" min="0" max="1000" step="1" value="1"></paper-input>
+
+          <paper-dropdown-menu label="Единица измерения">
+            <paper-listbox slot="dropdown-content" selected="1">
+              <template is="dom-repeat" items="{{unit}}">
+                <paper-item>{{item}}</paper-item>
+              </template>
+            </paper-listbox>
+          </paper-dropdown-menu>
+        </div>
+        <div class="buttons">
+          <paper-button dialog-dismiss>Добавить</paper-button>
+          <paper-button dialog-confirm autofocus>Отмена</paper-button>
+        </div>
+      </paper-dialog>
+
+      <paper-button on-tap="_addRecipeStep">Добавить шаг рецепта</paper-button>
+
+      <paper-dialog entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop="true" id="stepDialog">
+        <h2>Добавление шага рецепта</h2>
+          <paper-input label="Подробно опишите шаг рецепта" type="text"></paper-input>
+        <div class="buttons">
+          <paper-button dialog-dismiss>Добавить</paper-button>
+          <paper-button dialog-confirm autofocus>Отмена</paper-button>
+        </div>
+      </paper-dialog>
+
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+        is: 'recipe-create-view',
+
+        properties: {
+            categories: {
+                type: Array,
+                value: ['Первые блюда', 'Вторые блюда', 'Закуски', 'Салаты']
+            },
+            ingridients: {
+                type: Array,
+                value: ['Отварной картофель', 'Отварная морковь', 'вареная колбаса "Докторская"', 'яйца вкрутую']
+            },
+            unit: {
+                type: Array,
+                value: ['шт.', 'мл.', 'л.', 'гр.', 'кг.']
+            }
+        },
+
+        _addIngredients(){
+            Polymer.dom(document.querySelector('body')).appendChild(this.$.ingredientsDialog);
+            this.$.ingredientsDialog.open();
+        },
+
+        _addRecipeStep(){
+            Polymer.dom(document.querySelector('body')).appendChild(this.$.stepDialog);
+            this.$.stepDialog.open();
+        }
+    });
+  </script>
+</dom-module>

@@ -75,7 +75,8 @@
                 f.call(self, request.result);
             };
             request.onupgradeneeded = (e) => {
-                e.currentTarget.result.createObjectStore(self.storeName, {keyPath: "key"});
+                e.currentTarget.result.createObjectStore('CooBookRecipeObjectStore', {autoIncrement : true});
+                e.currentTarget.result.createObjectStore('CooBookIngredientsObjectStore', {autoIncrement : true});
                 self._connectDB(f);
             };
         },
@@ -102,49 +103,7 @@
 
         _remove: function () {
             this.pop('items');
-        },
-
-
-//        _initDB() {
-//            if (!this.dbr) {
-//                let idb;
-//                if ("webkitIndexedDB" in window) {
-//                    idb = window.webkitIndexedDB;
-//                } else if ("mozIndexedDB" in window) {
-//                    idb = window.mozIndexedDB;
-//                } else {
-//                    alert("Ваш браузер не поддерживает IndexedDB!");
-//                }
-//
-//                if (idb) {
-//                    let idbRequest = idb.open("CooBook");
-//                    idbRequest.onsuccess = this._idbRequestSuccess;
-//                    idbRequest.onerror = this._idbRequestError;
-//                }
-//            }
-//        },
-//
-//        _idbRequestSuccess(e){
-//            let db = e.target.result;
-//            if (db.version === '') {
-//                let setVersion = db.setVersion('1');
-//                setVersion.onsuccess = this._idbCreateStore;
-//            } else {
-//
-//            }
-//        },
-//
-//        _idbCreateStore(e) {
-//            let db = e.target.transaction.db;
-//            if (!db.objectStoreNames.contains('recipes')) {
-//                co = db.createObjectStore('chat','id');
-//            }
-//        },
-//
-//        _idbRequestError(err){
-//            let idbRequest = err.target;
-//            console.log(idbRequest);
-//        }
+        }
     });
   </script>
 </dom-module>

@@ -60,11 +60,7 @@
             },
             selectedIngredient: {
                 observer: '_activeItemChanged'
-            },
-//            globalId: {
-//                type: Number,
-//                value: 0
-//            }
+            }
         },
 
         ready() {
@@ -82,7 +78,8 @@
                 f.call(self, request.result, arg);
             };
             request.onupgradeneeded = (e) => {
-                e.currentTarget.result.createObjectStore(self.storeName, {autoIncrement : true});
+                e.currentTarget.result.createObjectStore('CooBookRecipeObjectStore', {autoIncrement : true});
+                e.currentTarget.result.createObjectStore('CooBookIngredientsObjectStore', {autoIncrement : true});
                 self._connectDB(f);
             };
         },

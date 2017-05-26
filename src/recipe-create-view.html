@@ -12,6 +12,7 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/star-rating/star-rating.html">
 <link rel="import" href="icons.html">
 
 <dom-module id="recipe-create-view">
@@ -29,6 +30,7 @@
       paper-dropdown-menu{
         width: 100%;
       }
+
     </style>
 
     <div class="card">
@@ -103,6 +105,12 @@
           <paper-button dialog-confirm autofocus>Отмена</paper-button>
         </div>
       </paper-dialog>
+
+        <span>Сложность рецепта</span>
+        <star-rating showtotals="true" stars="5" rate="0" customcharicon="thumb-up" id="difficulty"></star-rating>
+
+        <span>Ваша оценка</span>
+        <star-rating showtotals="true" stars="5" rate="0" id="rate"></star-rating>
 
         <paper-button raised on-tap="_addRecipe">Добавить</paper-button>
 
@@ -217,14 +225,16 @@
         },
 
         _addRecipe(){
-            let newIngredient = {name: this.$.ingredientName.value};
-            this._connectDB(this._addIngredientCallBack, newIngredient);
+            let newRecipe = {
+                name: this.$.ingredientName.value
+            };
+            this._connectDB(this._addRecipeCallBack, newRecipe);
         },
 
-        _addIngredientCallBack(db, newIngredient) {
+        _addRecipeCallBack(db, newRecipe) {
             let self = this;
             let store = db.transaction(['CooBookRecipeObjectStore'], "readwrite").objectStore('CooBookRecipeObjectStore');
-            let request = store.add(newIngredient);
+            let request = store.add(newRecipe);
 
             request.onsuccess = (e) => {
                 newIngredient.id = e.target.result;

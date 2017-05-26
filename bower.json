@@ -23,7 +23,8 @@
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
     "neon-animation": "PolymerElements/neon-animation#^2.0.0",
-    "web-animations-js": "web-animations/web-animations-js#^2.2.5"
+    "web-animations-js": "web-animations/web-animations-js#^2.2.5",
+    "star-rating": "*"
   },
   "private": true
 }

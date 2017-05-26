@@ -45,22 +45,28 @@
 
       <paper-input label="Время приготовления (мин)" type="number" min="0" max="300" step="5"></paper-input>
 
-      <paper-button on-tap="_addIngredients">Добавить ингридиент</paper-button>
+        <paper-listbox>
+            <template is="dom-repeat" items="{{recipe.ingredients}}">
+                <paper-item>{{item.name}} {{item.quantity}} {{item.unit}}</paper-item>
+            </template>
+        </paper-listbox>
+
+      <paper-button on-tap="_addIngredient">Добавить ингридиент</paper-button>
 
       <paper-dialog entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop="true" id="ingredientsDialog">
         <h2>Добавление ингредиента</h2>
         <div>
-          <paper-dropdown-menu label="Ингредиент">
+          <paper-dropdown-menu label="Ингредиент" id="ingredientDropdown">
             <paper-listbox slot="dropdown-content" selected="1">
-              <template is="dom-repeat" items="{{ingridients}}">
-                <paper-item>{{item}}</paper-item>
+              <template is="dom-repeat" items="{{ingredients}}">
+                <paper-item>{{item.name}}</paper-item>
               </template>
             </paper-listbox>
           </paper-dropdown-menu>
 
-          <paper-input label="Кол-во/Объем/Масса" type="number" min="0" max="1000" step="1" value="1"></paper-input>
+          <paper-input label="Кол-во/Объем/Масса" type="number" min="0" max="1000" step="1" value="1" id="quantityInput"></paper-input>
 
-          <paper-dropdown-menu label="Единица измерения">
+          <paper-dropdown-menu label="Единица измерения" id="unitDropdown">
             <paper-listbox slot="dropdown-content" selected="1">
               <template is="dom-repeat" items="{{unit}}">
                 <paper-item>{{item}}</paper-item>
@@ -69,7 +75,7 @@
           </paper-dropdown-menu>
         </div>
         <div class="buttons">
-          <paper-button dialog-dismiss>Добавить</paper-button>
+          <paper-button dialog-dismiss on-tap="_addIngredientToRecipe">Добавить</paper-button>
           <paper-button dialog-confirm autofocus>Отмена</paper-button>
         </div>
       </paper-dialog>
@@ -85,6 +91,8 @@
         </div>
       </paper-dialog>
 
+        <paper-button raised on-tap="_addRecipe">Добавить</paper-button>
+
     </div>
   </template>
 
@@ -93,29 +101,123 @@
         is: 'recipe-create-view',
 
         properties: {
+            dbName: {
+                type: String,
+                value: 'CooBookBase'
+            },
+            storeName: {
+                type: String,
+                value: 'CooBookObjectStore'
+            },
             categories: {
                 type: Array,
                 value: ['Первые блюда', 'Вторые блюда', 'Закуски', 'Салаты']
             },
-            ingridients: {
+            ingredients: {
                 type: Array,
-                value: ['Отварной картофель', 'Отварная морковь', 'вареная колбаса "Докторская"', 'яйца вкрутую']
+                value: []
             },
             unit: {
                 type: Array,
                 value: ['шт.', 'мл.', 'л.', 'гр.', 'кг.']
+            },
+            recipe: {
+                type: Object,
+                value: {}
             }
         },
 
-        _addIngredients(){
+        ready() {
+            if (!this.indexedDB) this.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+            this._connectDB1(this._getIngredients);
+
+            if (!this.recipe.ingredients) this.recipe.ingredients = [];
+        },
+
+        _addIngredient(){
             Polymer.dom(document.querySelector('body')).appendChild(this.$.ingredientsDialog);
+
             this.$.ingredientsDialog.open();
+        },
+
+        _addIngredientToRecipe() {
+            this.recipe.ingredients.push({
+                name: this.$.ingredientDropdown.value,
+                quantity: this.$.quantityInput.value,
+                unit: this.$.unitDropdown.value
+            });
+            this.notifyPath('recipe.ingredients');
         },
 
         _addRecipeStep(){
             Polymer.dom(document.querySelector('body')).appendChild(this.$.stepDialog);
             this.$.stepDialog.open();
-        }
+        },
+
+        _connectDB(f, arg){
+            let self = this;
+            let request = this.indexedDB.open(this.dbName, 1);
+            request.onerror = (err) => {
+                console.log(err);
+            };
+            request.onsuccess = () => {
+                f.call(self, request.result, arg);
+            };
+            request.onupgradeneeded = (e) => {
+                e.currentTarget.result.createObjectStore(self.storeName, {keyPath: 'id'});
+                self._connectDB(f);
+            };
+        },
+
+        _connectDB1(f, arg){
+            let self = this;
+            let request = this.indexedDB.open(this.dbName, 1);
+            request.onerror = (err) => {
+                console.log(err);
+            };
+            request.onsuccess = () => {
+                f.call(self, request.result, arg);
+            };
+            request.onupgradeneeded = (e) => {
+                e.currentTarget.result.createObjectStore('CooBookIngredientsObjectStore', {keyPath: 'id'});
+                self._connectDB(f);
+            };
+        },
+
+        _getIngredients(db) {
+            let self = this;
+            let objectStore = db.transaction([this.storeName], "readonly").objectStore('CooBookIngredientsObjectStore');
+
+            objectStore.openCursor().onsuccess = (event) => {
+                let cursor = event.target.result;
+                if (cursor) {
+                    self.push('ingredients', cursor.value);
+                    self.globalId++;
+                    cursor.continue();
+                }
+            };
+        },
+
+        _addRecipe(){
+            let newIngredient = {name: this.$.ingredientName.value};
+            this._connectDB(this._addIngredientCallBack, newIngredient);
+        },
+
+        _addIngredientCallBack(db, newIngredient) {
+            let self = this;
+            let store = db.transaction([this.storeName], "readwrite").objectStore(this.storeName);
+            let request = store.add(newIngredient);
+
+            request.onsuccess = (e) => {
+                //self.globalId++;
+                newIngredient.id = e.target.result;
+                self.push('ingredients', newIngredient)
+            };
+
+            request.onerror = (err) => {
+                console.log(err);
+            };
+        },
     });
   </script>
 </dom-module>

@@ -1,6 +1,6 @@
 # \<CooBook\>
 
-Cook Book for IT gyus
+Cook Book for IT guys.
 
 ## Install the Polymer-CLI
 

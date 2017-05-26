@@ -22,7 +22,6 @@
     "paper-item": "PolymerElements/paper-item#^2.0.0",
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
-    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.0.0", /*del*/
     "neon-animation": "PolymerElements/neon-animation#^2.0.0",
     "web-animations-js": "web-animations/web-animations-js#^2.2.5"
   },

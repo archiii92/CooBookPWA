@@ -91,14 +91,14 @@
             this._connectDB(this._getRecipes);
         },
 
-        _connectDB(f){
+        _connectDB(f, arg){
             let self = this;
             let request = this.indexedDB.open(this.dbName, 1);
             request.onerror = (err) => {
                 console.log(err);
             };
             request.onsuccess = () => {
-                f.call(self, request.result);
+                f.call(self, request.result, arg);
             };
             request.onupgradeneeded = (e) => {
                 e.currentTarget.result.createObjectStore('CooBookRecipeObjectStore', {autoIncrement : true});
@@ -127,11 +127,40 @@
         },
 
         _remove: function () {
-            this.pop('items');
+            if (this.activeItem) {
+                this._connectDB(this._removeRecipeCallBack, this.activeItem);
+            }
+        },
+
+        _removeRecipeCallBack(db, activeItem) {
+            let self = this;
+            let store = db.transaction([this.storeName], "readwrite").objectStore(this.storeName);
+            let request = store.delete(activeItem.id);
+
+            request.onsuccess = () => {
+                let index = self._indexOf(self.recipes, activeItem.name);
+
+                if (index > -1) {
+                    self.splice('recipes', index, 1);
+                }
+            };
+
+            request.onerror = (err) => {
+                console.log(err);
+            };
         },
 
         _activeItemChanged: function(item) {
             this.$.recipeGrid.selectedItems = item ? [item] : [];
+        },
+
+        _indexOf(arr, name) {
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].name === name) {
+                    return i;
+                }
+            }
+            return -1;
         }
     });
   </script>

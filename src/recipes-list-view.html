@@ -103,6 +103,7 @@
             request.onupgradeneeded = (e) => {
                 e.currentTarget.result.createObjectStore('CooBookRecipeObjectStore', {autoIncrement : true});
                 e.currentTarget.result.createObjectStore('CooBookIngredientsObjectStore', {autoIncrement : true});
+                e.currentTarget.result.createObjectStore('CooBookPhotoObjectStore', {autoIncrement : true});
                 self._connectDB(f);
             };
         },

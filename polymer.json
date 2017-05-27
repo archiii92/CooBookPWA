@@ -2,9 +2,9 @@
   "entrypoint": "index.html",
   "shell": "src/coobook-app.html",
   "fragments": [
-    "src/recipe-list-view.html",
-    "src/view2.html",
-    "src/view3.html",
+    "src/ingredients-list-view.html",
+    "src/recipe-create-view.html",
+    "src/recipes-list-view.html",
     "src/view404.html"
   ],
   "sourceGlobs": [

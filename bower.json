@@ -24,7 +24,11 @@
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
     "neon-animation": "PolymerElements/neon-animation#^2.0.0",
     "web-animations-js": "web-animations/web-animations-js#^2.2.5",
-    "star-rating": "*"
+    "star-rating": "*",
+    "paper-share-button": "Koada-os/paper-share-button#^2.1.0"
   },
-  "private": true
+  "private": true,
+  "resolutions": {
+    "neon-animation": "1 - 2"
+  }
 }
